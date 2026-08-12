@@ -26,7 +26,7 @@ LAN):
 | Python package | `pymodbus` ≥ 3.6.0 (Home Assistant installs this for you) |
 | Network | Modbus TCP, usually port **502** |
 | Heat-pump serial | Modbus RTU **19200-8-N-2**, slave ID **1** (typical) |
-| Current version | `0.2.7` |
+| Current version | `0.2.8` |
 
 ---
 
@@ -317,7 +317,7 @@ monorepo with `python scripts/sync_github_hacs.py` when you change the
 component.
 
 Public repo: [github.com/erhancm/ha-sprsun](https://github.com/erhancm/ha-sprsun).
-Tag releases so HACS can update (`v0.2.7` ↔ `version` in `manifest.json`).
+Tag releases so HACS can update (`v0.2.8` ↔ `version` in `manifest.json`).
 
 ---
 
