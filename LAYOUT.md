@@ -38,3 +38,14 @@ Variant Projects/
 ```
 
 Keep **one** git root for the monorepo. Do not nest `.git` inside `github-hacs/`.
+
+## CI on GitHub (`ha-sprsun`)
+
+Two workflows run on push / PR / nightly / manual dispatch:
+
+| Workflow | Purpose |
+|----------|---------|
+| `.github/workflows/hassfest.yml` | Home Assistant integration validator |
+| `.github/workflows/hacs.yml` | Same checks HACS uses for default-store inclusion |
+
+Both must stay green before opening a PR to [`hacs/default`](https://github.com/hacs/default). Cut a new GitHub **Release** after they pass.
