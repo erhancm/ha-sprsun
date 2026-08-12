@@ -1,0 +1,65 @@
+write_register:
+  name: Write holding register
+  description: Write a single holding register (use with care).
+  fields:
+    address:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 500
+          mode: box
+    value:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 65535
+          mode: box
+
+set_mode:
+  name: Set unit mode
+  description: Write P06 unit mode (0–4 or name).
+  fields:
+    mode:
+      required: true
+      example: Heating
+      selector:
+        text:
+
+set_power:
+  name: Set power
+  description: RMW bit0 of parameter marker (addr 50).
+  fields:
+    # Quoted — bare `on` is parsed as YAML boolean true and breaks services.yaml.
+    "on":
+      required: true
+      selector:
+        boolean:
+
+refresh_full:
+  name: Refresh full map
+  description: Force an immediate full FC3 sweep of register_limit (not just the light overview).
+
+dump_live_log:
+  name: Dump live log (HA server)
+  description: >
+    Write the in-memory circular live log (up to 10k lines) to a file under
+    the Home Assistant config directory (default sprsun_live.log). This saves
+    on the HA host, not your PC.
+  fields:
+    filename:
+      required: false
+      example: sprsun_live.log
+      selector:
+        text:
+
+download_live_log:
+  name: Download live log (PC)
+  description: >
+    Create a notification with a short-lived link that downloads the live log
+    to your browser (Save / Downloads). Prefer the Overview "Save to PC" button.
+
+clear_live_log:
+  name: Clear live log
+  description: Clear the in-memory circular live log buffer.

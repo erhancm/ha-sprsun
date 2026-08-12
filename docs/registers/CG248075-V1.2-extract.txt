@@ -1,0 +1,1840 @@
+MODBUS communication protocol
+1、Communication adopts RS485 bus, asynchronous serial signal 1 start bit, 8 data bits, 2 end bits, no parity check, baud rate 19200bps.
+2、Comply with the standard MODBUS RTU protocol, 16-bit data structure, 16-bit CRC check low byte is in front of high byte.
+3、The unit is determined from address #1 to address #8 according to the dial code 2-4.
+4、The upper computer is the calling host, and the controller is the slave.
+5、Master-slave communication uses three commands:
+03H（Read holding registers(4x)）
+TX：[device address]+[command number03H] + [Starting register address high 8 bits] + [lower 8 bits] + [The upper 8 bits of the number of registers read] + [lower 8 bits] +
+[The lower 8 bits of the CRC check] + [The upper 8 bits of the CRC check]
+RX：[device address] + [command number03H] + [number of bytes returned] + data1] + [data2] +...+ [data n] + [The lower 8 bits of the CRC check] + [The upper 8 bits of the
+CRC check]
+06H（Write single register）
+TX：[device address] + [command number06H] + [The upper 8 bits of the register address to be set] + [lower 8 bits] + [The upper 8 bits of the lower data] + [lower 8 bits] +
+[The lower 8 bits of the CRC check + [The upper 8 bits of the CRC check]
+RX：If the command sent by the computer is returned as it is, otherwise it will not respond
+10H（Write multiple register）
+TX：[device address] + [command number10H] + [Starting register address high 8 bits] + [lower 8 bits] + [The upper 8 bits of the number of registers] + [lower 8 bits] +
+[number of memory bytes] + [Data 1 high 8 bits] + [lower 8 bits] +…. + [data N high 8bits] + [lower 8 bits] + [The lower 8 bits of the CRC check] + [The upper 8 bits
+of the CRC check]
+RX：[device address] + [command number10H] + [Starting register address high 8 bits] + [lower 8 bits] + [The upper 8 bits of the number of registers] + [lower 8 bits] + [The
+lower 8 bits of the CRC check] + [The upper 8 bits of the CRC check]
+
+
+-- 1 of 21 --
+
+2
+6、Modified parameters are on machine #1, and other units can only be queried.
+Data add（R-only read，RW-read and write）
+Data add
+Instructions
+Data range
+Note
+R 0x0000
+Invalid
+R 0x0001
+Invalid
+R 0x0002
+Switching input symbol
+bit
+0 : A/C Linkage switch
+bit
+1 : Linkage switch
+bit
+2 : Heating linkage
+bit
+3 : Cooling linkage
+bit
+4 : Flow Switch
+bit
+5 : High pressure switch
+bit
+6 : Phase sequence detection
+bit
+7 : Invalid
+R 0x0003
+Working status mark
+bit
+0 : hotwater demand
+bit
+1 : Heating demand
+bit
+2 : With or without heating
+bit
+3 : With or without cooling
+bit
+4 : Antilegionella on
+bit
+5 : cooling demand
+bit
+6 : Alarm downtime
+bit
+7 : defrost
+R 0x0004
+Output symbol 1
+bit
+0 : Compressor
+bit
+1 : Invalid
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Fan
+bit
+6 : 4-way valve
+bit
+7 : High or low fan speed:0-low
+1-high
+
+
+-- 2 of 21 --
+
+3
+R 0x0005
+Output symbol 2
+bit
+0 : Chassis heater
+bit
+1 : Invalid
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Heating heater
+bit
+6 : Three-way valve
+bit
+7 : Hotwater heater
+R 0x0006
+Output symbol 3
+bit
+0 : A/C PUMP
+bit
+1 : Crank heater
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Assistant solenoid valve
+bit
+6 : Pump
+bit
+7 : Invalid
+R 0x0007
+Failure symbol 1
+bit
+0 : Hotwater temp
+bit
+1 : Ambi temp
+bit
+2 : coil temp.
+bit
+3 : Invalid
+bit
+4 : Outlet temp.
+bit
+5 : High pressure sensor failure
+bit
+6 : Invalid
+bit
+7 : Phase sequence
+R 0x0008
+Failure symbol 2
+bit
+0 : Water flow failure
+bit
+1 : Invalid
+bit
+2 : High protection of heating water outlet
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Invalid
+bit
+6 : Invalid
+
+
+-- 3 of 21 --
+
+4
+bit
+7 : Invalid
+R 0x0009
+Failure symbol 3
+bit
+0 : Invalid
+bit
+1 : Invalid
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Invalid
+bit
+6 : Outlet gas temp. failure
+bit
+7 : Invalid
+R 0x000A
+Failure symbol 4
+bit
+0 : Water inlet temp. failure
+bit
+1 : Exhaust temperature is too high
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Low protection of cooling water outlet
+bit
+6 : Inlet gas temp. failure
+bit
+7 : Invalid
+R 0x000B
+Failure symbol 5
+bit
+0 : Low pressure protection
+bit
+1 : High pressure protection
+bit
+2 : Coil temperature is too high
+bit
+3 : Invalid
+bit
+4 : Invalid
+bit
+5 : Invalid
+bit
+6 : High pressure sensor failure
+bit
+7 : Low pressure sensor failure
+R 0x000C
+Failure symbol 6
+bit
+0 : Invalid
+bit
+1 : Invalid
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : sec antifreeze
+bit
+5 : one antifreeze
+
+
+-- 4 of 21 --
+
+5
+bit
+6 : Invalid
+bit
+7 : Invalid
+R 0x000D
+Failure symbol 7
+bit
+0 : Invalid
+bit
+1 : Ambient temperature is too low
+bit
+2 : Invalid
+bit
+3 : Invalid
+bit
+4 : frequency conversion module is faulty
+bit
+5 : 2# Dc fan failure
+bit
+6 : 1# Dc fan failure
+bit
+7 : Invalid
+R 0x000E
+Inlet temp.
+n*0.1℃
+R 0x000F
+Hotwater temp.
+n*0.1℃
+R 0x0010
+Invalid
+R 0x0011
+Ambi temp.
+n*0.5℃
+R 0x0012
+Outlet temp.
+n*0.1℃
+R 0x0013
+Invalid
+R 0x0014
+Invalid
+R 0x0015
+Suct gas temp.
+n*0.5℃
+R 0x0016
+Coil temp.
+n*0.5℃
+R 0x0017
+Invalid
+R 0x0018
+Invalid
+R 0x0019
+Invalid
+R 0x001A
+Invalid
+R 0x001B
+Exhaust temp.
+n*1℃
+R 0x001C
+EEV1 step.
+R 0x001D
+EEV2 step.
+R 0x001E
+Comp.frequency
+R 0x001F
+Frequency conversion failure 1
+R 0x0020
+Frequency conversion failure 2
+R 0x0021
+DC bus voltage
+
+
+-- 5 of 21 --
+
+6
+R 0x0022
+Driving temp.
+n*0.5℃
+R 0x0023
+Comp.current
+R 0x0024
+Target frequency
+R 0x0025
+Invalid
+R 0x0026
+DC fan 1 speed
+R 0x0027
+DC fan 2 speed
+R 0x0028
+Evap.temp.
+n*0.1℃
+R 0x0029
+Cond.temp.
+n*0.1℃
+R 0x002A
+Frequency conversion fault 8
+bits higher
+If the values are 0xFF, corresponding faults are reported
+R 0x002B
+Frequency conversion failure 8
+bits lower
+R 0x002C
+Controller Version
+R 0x002D
+Display Version
+R 0x002E
+DC pump speed
+R 0x002F
+Suct.press
+n*0.1bar
+R 0x0030
+Disch.press
+n*0.1bar
+R 0x0031
+DC fan target
+RW 0x0032
+Parameter marker definition
+bit 0 : 0-OFF，1-ON(bit add:0x0320)
+bit 1 : MV mode：0-Auto，1- manu(bit add:0x0321)
+(A45)
+bit 2 : Manual frequency selection(bit add:0x0322)
+bit 3 : Invalid
+bit 4 : Invalid
+bit 5 : AV MODE：0-Auto，1- manu(bit add:0x0325)
+(B01)
+bit 6 : AV init outlet stp. (bit add:0x0326) (B93)
+bit 7 : Invalid
+RW 0x0033
+Control mark 1
+bit 0 :Constant freq adj：0-NO，1-YES (bit add:0x0330)
+(R29)
+
+
+-- 6 of 21 --
+
+7
+bit 1 : Pressure switch enable：1-use，0-Unuse (bit
+add:0x0331)
+(F01)
+bit 2 :AV cool enable：0-use,1-Unuse (bit add:0x0332)
+(B74)
+bit3
+:AV control
+mode ：0 Enhan
+,1- Exhau (bit
+add:0x0333) (B92)
+bit 4 : DCfan 1 enable：0-Unuse，1-use (bit add:0x0334)
+(D01)
+bit 5 : DCfan 2 enable：0-Unuse，1-use (bit add:0x0335)
+(D02)
+bit
+6
+:
+Parameters
+reset
+0-Unuse ，1-use
+(bit
+add:0x0336)
+bit 7 : Failure reset 0-Unuse，1-use (bit add:0x0337)
+RW 0x0034
+Control mark 2
+bit 0 : antilegionella Enale 0-Unuse，1-use
+(bit
+add:0x0340)
+bit 1 : Two/Three function 0-Unuse，1-use (G01) (bit
+add:0x0341)
+bit 2 : Invalid
+bit 3 : Invalid
+bit 4 : Invalid
+bit 5 : Invalid
+bit 6 : Invalid
+bit 7 : Invalid
+RW 0x0035
+Timeband
+bit0 : Timeband 1 Enale (bit add:0x0350)
+bit1 : Timeband 2 Enale (bit add:0x0351)
+bit2 : Timeband 3 Enale (bit add:0x0352)
+RW 0x0036
+P06 Unit mode
+0 DHW
+1 Heating
+2 Cooling
+3 Heating+DHW
+4 Cooling+DHW
+
+
+-- 7 of 21 --
+
+8
+RW 0x0037
+H01 Defrost freq.
+30-120HZ
+RW 0x0038
+H08 Defros period 1
+10MIN~120MIN
+RW 0x0039
+H11 Defros period 2
+10MIN~120MIN
+RW 0x003A
+H14 Defros period 3
+10MIN~120MIN
+RW 0x003B
+H15 Comp total run
+1-60
+n*5min
+RW 0x003C
+H16 Comp continuous run
+5MIN -90MIN
+RW 0x003D
+H05 Defrost time
+5-20MIN
+RW 0x003E
+A01 MV preiod
+20S~90S
+RW 0x003F
+A14 MV heat initial 0
+0~240
+n*2P
+RW 0x0040
+A15 MV heat initial 1
+0~240
+n*2P
+RW 0x0041
+A16 MV heat initial 2
+0~240
+n*2P
+RW 0x0042
+A17 MV heat initial 3
+0~240
+n*2P
+RW 0x0043
+A18 MV heat initial 4
+0~240
+n*2P
+RW 0x0044
+A19 MV heat initial 5
+0~240
+n*2P
+RW 0x0045
+A20 MV heat initial 6
+0~240
+n*2P
+RW 0x0046
+A21 MV heat initial 7
+0~240
+n*2P
+RW 0x0047
+A22 MV cool initial 0
+0~240
+n*2P
+RW 0x0048
+A23 MV cool initial 1
+0~240
+n*2P
+RW 0x0049
+A24 MV cool initial 2
+0~240
+n*2P
+RW 0x004A
+A25 MV cool initial 3
+0~240
+n*2P
+RW 0x004B
+A26 MV water init. 0
+0~240
+n*2P
+RW 0x004C
+A27 MV water init. 1
+0~240
+n*2P
+RW 0x004D
+A28 MV water init. 2
+0~240
+n*2P
+RW 0x004E
+A29 MV water init. 3
+0~240
+n*2P
+RW 0x004F
+A30 MV water init. 4
+0~240
+n*2P
+RW 0x0050
+A31 MV water init. 5
+0~240
+n*2P
+RW 0x0051
+A32 MV water init. 6
+0~240
+n*2P
+RW 0x0052
+A33 MV water init. 7
+0~240
+n*2P
+RW 0x0053
+A34 MV heat lower 0
+0~240
+n*2P
+RW 0x0054
+A34 MV heat lower 1
+0~240
+n*2P
+
+
+-- 8 of 21 --
+
+9
+RW 0x0055
+A34 MV heat lower 2
+0~240
+n*2P
+RW 0x0056
+A34 MV heat lower 3
+0~240
+n*2P
+RW 0x0057
+A34 MV heat lower 4
+0~240
+n*2P
+RW 0x0058
+A34 MV heat lower 5
+0~240
+n*2P
+RW 0x0059
+A34 MV heat lower 6
+0~240
+n*2P
+RW 0x005A
+A34 MV heat lower 7
+0~240
+n*2P
+RW 0x005B
+A43 MV defrost open
+0~240
+n*2P
+RW 0x005C
+A44 MV water lower
+25~75
+n*2P
+RW 0x005D
+A46 MV manual open
+10~225
+n*2P
+RW 0x005E
+A47 MV SH ratio
+1~6
+RW 0x005F
+A48 MV SH diff.
+1~180
+RW 0x0060
+A50 MV comp.keep time
+0~250S
+n*2S
+RW 0x0061
+A51 MV def.keep time
+0~250S
+n*2S
+RW 0x0062
+B02 AV manual open
+10~225
+n*2P
+RW 0x0063
+B04 AV exhaust ratio
+1~6
+RW 0x0064
+B05 AV exhaust diff.
+0~180
+RW 0x0065
+B06 AV SH ratio
+1~6
+RW 0x0066
+B07 AV SH diff.
+0~180
+RW 0x0067
+B08 AV period
+10~20S
+RW 0x0068
+B19 AV heat initial 0
+0~240
+Outlet temp.≤B93，n*2P
+RW 0x0069
+B20 AV heat initial 1
+0~240
+n*2P
+RW 0x006A
+Invalid
+RW 0x006B
+Invalid
+RW 0x006C
+Invalid
+RW 0x006D
+Invalid
+RW 0x006E
+Invalid
+RW 0x006F
+Invalid
+RW 0x0070
+B27 AV water initial 0
+0~240
+Outlet temp.≤B93，n*2P
+RW 0x0071
+B28 AV water initial 1
+0~240
+n*2P
+RW 0x0072
+Invalid
+
+
+-- 9 of 21 --
+
+10
+RW 0x0073
+Invalid
+RW 0x0074
+Invalid
+RW 0x0075
+Invalid
+RW 0x0076
+Invalid
+RW 0x0077
+Invalid
+RW 0x0078
+B35 AV heat lower 0
+0~240
+n*2P
+RW 0x0079
+B36 AV heat lower 1
+0~240
+n*2P
+RW 0x007A
+B37 AV heat lower 2
+0~240
+n*2P
+RW 0x007B
+B38 AV heat lower 3
+0~240
+n*2P
+RW 0x007C
+B39 AV heat lower 4
+0~240
+n*2P
+RW 0x007D
+B40 AV heat lower 5
+0~240
+n*2P
+RW 0x007E
+B41 AV heat lower 6
+0~240
+n*2P
+RW 0x007F
+B42 AV heat lower 7
+0~240
+n*2P
+RW 0x0080
+B43 AV defrost open
+0~240
+n*2P
+RW 0x0081
+B44 AV cool open
+0~240
+n*2P
+RW 0x0082
+F02 HP protect value
+0-250
+(n+250)*0.1bar
+RW 0x0083
+F03 HP recover value
+0-250
+(n+250)*0.1bar
+RW 0x0084
+F04 LP protect value
+0-200
+n*0.1bar
+RW 0x0085
+F05 LP recover value
+0-200
+n*0.1bar
+RW 0x0086
+D03 Cool dcfan max speed
+0~100
+n*10rpm
+RW 0x0087
+D04 Cool dcfan min speed
+0~100
+n*10rpm
+RW 0x0088
+D05 Cool dcfan high press
+10-40
+RW 0x0089
+D06 Cool dcfan open diff.
+2-10
+n*10bar
+RW 0x008A
+D07 Cool dcfan close diff.
+2-10
+n*10bar
+RW 0x008B
+D08 Cool dcfan init speed
+0~100
+n*10rpm
+RW 0x008C
+D09 Heat dcfan max speed
+0~100
+n*10rpm
+RW 0x008D
+D10 Heat dcfan min speed
+0~100
+n*10rpm
+RW 0x008E
+D11 Heat dcfan low press
+5-15
+n*10bar
+RW 0x008F
+D12 Heat dcfan open diff.
+2-10
+n*10bar
+RW 0x0090
+D13 Heat dcfan close diff.
+2-10
+n*10bar
+
+
+-- 10 of 21 --
+
+11
+RW 0x0091
+D14 Heat DCfan init speed
+0~100
+n*10rpm
+RW 0x0092
+D15 DCfan adjust period
+0-30
+RW 0x0093
+D16 DCfan adjust speed 1
+0~100
+Speed difference≥200
+RW 0x0094
+D17 DCfan adjust speed 2
+0~100
+200＞Speed difference≥100
+RW 0x0095
+D18 DCfan adjust speed 3
+0~100
+100＞Speed difference≥50
+RW 0x0096
+D19 DCfan adjust speed 4
+0~100
+50＞Speed difference≥20
+RW 0x0097
+D20 DCfan adjust speed 5
+0~100
+20＞Speed difference≥5
+RW 0x0098
+B45 AV water lower 0
+0~240
+n*2P
+RW 0x0099
+B46 AV water lower 1
+0~240
+n*2P
+RW 0x009A
+B47 AV water lower 2
+0~240
+n*2P
+RW 0x009B
+B48 AV water lower 3
+0~240
+n*2P
+RW 0x009C
+B49 AV water lower 4
+0~240
+n*2P
+RW 0x009D
+B50 AV water lower 5
+0~240
+n*2P
+RW 0x009E
+B51 AV water lower 6
+0~240
+n*2P
+RW 0x009F
+B52 AV water lower 7
+0~240
+n*2P
+RW 0x00A0
+B53 AV heat exhaust 0
+50~125℃
+T≥14℃
+RW 0x00A1
+B54 AV heat exhaust 1
+50~125℃
+[9，14)
+RW 0x00A2
+B55 AV heat exhaust 2
+50~125℃
+[4，9)
+RW 0x00A3
+B56 AV heat exhaust 3
+50~125℃
+[-5，4)
+RW 0x00A4
+B57 AV heat exhaust 4
+50~125℃
+[-10，-5)
+RW 0x00A5
+B58 AV heat exhaust 5
+50~125℃
+[-16，-10)
+RW 0x00A6
+B59 AV heat exhaust 6
+50~125℃
+[-23，-16)
+RW 0x00A7
+B60 AV heat exhaust 7
+50~125℃
+T＜-23℃
+RW 0x00A8
+B61 AV water exh.0
+50~125℃
+T≥14℃
+RW 0x00A9
+B62 AV water exh.1
+50~125℃
+[9，14)
+RW 0x00AA
+B63 AV water exh.2
+50~125℃
+[4，9)
+RW 0x00AB
+B64 AV water exh.3
+50~125℃
+[-5，4)
+RW 0x00AC
+B65 AV water exh.4
+50~125℃
+[-10，-5)
+RW 0x00AD
+B66 AV water exh.5
+50~125℃
+[-16，-10)
+RW 0x00AE
+B67 AV water exh.6
+50~125℃
+[-23，-16)
+
+
+-- 11 of 21 --
+
+12
+RW 0x00AF
+B68 AV water exh.7
+50~125℃
+T＜-23℃
+RW 0x00B0
+B69 AV cool exhaust 0
+50~125℃
+T≥38℃
+RW 0x00B1
+B70 AV cool exhaust 1
+50~125℃
+[30，38)
+RW 0x00B2
+B71 AV cool exhaust 2
+50~125℃
+[25，30)
+RW 0x00B3
+B72 AV cool exhaust 3
+50~125℃
+T＜25℃
+RW 0x00B4
+B73 AV open delay
+0~180S
+RW 0x00B5
+B75 AV off exh diff
+0~30
+RW 0x00B6
+B76 AV heat exh diff 0
+0~125℃
+T≥14℃
+RW 0x00B7
+B77 AV heat exh diff 1
+0~125℃
+[9，14)
+RW 0x00B8
+B78 AV heat exh diff 2
+0~125℃
+[4，9)
+RW 0x00B9
+B79 AV heat exh diff 3
+0~125℃
+[-5，4)
+RW 0x00BA
+B80 AV heat exh diff 4
+0~125℃
+[-10，-5)
+RW 0x00BB
+B81 AV heat exh diff 5
+0~125℃
+[-16，-10)
+RW 0x00BC
+B82 AV heat exh diff 6
+0~125℃
+[-23，-16)
+RW 0x00BD
+B83 AV heat exh diff 7
+0~125℃
+T＜-23℃
+RW 0x00BE
+B84 AV water exh diff 0
+0~125℃
+T≥14℃
+RW 0x00BF
+B85 AV water exh diff 1
+0~125℃
+[9，14)
+RW 0x00C0
+B86 AV water exh diff 2
+0~125℃
+[4，9)
+RW 0x00C1
+B87 AV water exh diff 3
+0~125℃
+[-5，4)
+RW 0x00C2
+B88 AV water exh diff 4
+0~125℃
+[-10，-5)
+RW 0x00C3
+B89 AV water exh diff 5
+0~125℃
+[-16，-10)
+RW 0x00C4
+B90 AV water exh diff 6
+0~125℃
+[-23，-16)
+RW 0x00C5
+B91 AV water exh diff 7
+0~125℃
+T＜-23℃
+RW 0x00C6
+P03 Temp.diff
+2℃~18℃
+RW 0x00C7
+F39 AC constant temp diff
+1~10℃
+RW 0x00C8
+P05 Temp.diff
+2℃~18℃
+RW 0x00C9
+F40 WT constant temp diff
+1~10℃
+RW 0x00CA
+P04 Hotwater setp.
+10~55
+n*0.5℃
+（Read only lower 8 bits）
+RW 0x00CB
+P02 Cooling setp
+12~30
+n*0.5℃（Read only lower 8 bits）
+RW 0x00CC
+P01 Heating setp
+10~55
+n*0.5℃（Read only lower 8 bits）
+
+
+-- 12 of 21 --
+
+13
+RW 0x00CD
+F44 WT temp calibration
+-30~30
+RW 0x00CE
+F45 Inlet temp calibration
+-30~30
+RW 0x00CF
+F46 Outlet temp calibration
+-30~30
+RW 0x00D0
+F49 WT temp offset stp.
+30~55
+RW 0x00D1
+F50 Inlet temp offset stp.
+30~55
+RW 0x00D2
+F42 Water temp offset
+0~50
+RW 0x00D3
+F43 Inlet temp offset
+0~50
+RW 0x00D4
+H03 Defrost in stp.
+-15℃~-1℃
+RW 0x00D5
+H04 Defrost exit stp.
+1℃~40℃
+RW 0x00D6
+H07 Def ambi coil 1
+0℃~30℃
+RW 0x00D7
+H10 Def ambi coil 2
+0℃~30℃
+RW 0x00D8
+H13 Def ambi coil 3
+0℃~30℃
+RW 0x00D9
+H09 Defrost ambi stp.1
+-30℃~30℃
+RW 0x00DA
+H12 Defrost ambi stp.2
+-30℃~30℃
+RW 0x00DB
+H04 Defrost ambi stp
+-30℃~30℃
+RW 0x00DC
+A02 MV heating SH 1
+-5℃~10℃
+T≥14℃
+RW 0x00DD
+A03 MV heating SH 2
+-5℃~10℃
+[9，14)
+RW 0x00DE
+A04 MV heating SH 3
+-5℃~10℃
+[4，9)
+RW 0x00DF
+A05 MV heating SH 4
+-5℃~10℃
+[-5，4)
+RW 0x00E0
+A06 MV heating SH 5
+-5℃~10℃
+[-10，-5)
+RW 0x00E1
+A07 MV heating SH 6
+-5℃~10℃
+[-16，-10)
+RW 0x00E2
+A08 MV heating SH 7
+-5℃~10℃
+[-23，-16)
+RW 0x00E3
+A09 MV heating SH 8
+-5℃~10℃
+T＜-23℃
+RW 0x00E4
+A10 MV cooling SH 1
+-5℃~10℃
+T≥38℃
+RW 0x00E5
+A11 MV cooling SH 2
+-5℃~10℃
+[30，38)
+RW 0x00E6
+A12 MV cooling SH 3
+-5℃~10℃
+[25，30)
+RW 0x00E7
+A13 MV cooling SH 4
+-5℃~10℃
+T＜25℃
+RW 0x00E8
+A42 MV exhaust stp.
+70℃~125℃
+RW 0x00E9
+B03 AV start ambi
+11℃~45℃
+RW 0x00EA
+B09 AV exhaust stp.
+70~120
+
+
+-- 13 of 21 --
+
+14
+RW 0x00EB
+B10 AV off exh stp.
+40~70
+RW 0x00EC
+B11 AV heating SH 1
+-10~10
+T≥14℃
+RW 0x00ED
+B12 AV heating SH 2
+-10~10
+[9，14)
+RW 0x00EE
+B13 AV heating SH 3
+-10~10
+[4，9)
+RW 0x00EF
+B14 AV heating SH 4
+-10~10
+[-5，4)
+RW 0x00F0
+B15 AV heating SH 5
+-10~10
+[-10，-5)
+RW 0x00F1
+B16 AV heating SH 6
+-10~10
+[-16，-10)
+RW 0x00F2
+B17 AV heating SH 7
+-10~10
+[-23，-16)
+RW 0x00F3
+B18 AV heating SH 8
+-10~10
+T＜-23℃
+RW 0x00F4
+D21 AC fan switch ambi.1
+-10~50℃
+RW 0x00F5
+D22 AC fan switch ambi.2
+-10~50℃
+RW 0x00F6
+R16 Exhaust high TP0
+50~125℃
+RW 0x00F7
+R17 Exhaust high TP1
+50~125℃
+RW 0x00F8
+R18 Exhaust high TP2
+50~125℃
+RW 0x00F9
+R19 Exhaust high TP3
+50~125℃
+RW 0x00FA
+R20 Exhaust high TP4
+50~125℃
+RW 0x00FB
+Manual frequency setting
+RW 0x00FC
+Freq of water ROO
+30~120Hz
+T≥14℃
+RW 0x00FD
+Freq of water RO1
+30~120Hz
+[9，14)
+RW 0x00FE
+Freq of water RO2
+30~120Hz
+[4，9)
+RW 0x00FF
+Freq of water RO3
+30~120Hz
+[-5，4)
+RW 0x0100
+Freq of water R30
+30~120Hz
+[-10，-5)
+RW 0x0101
+Freq of water R31
+30~120Hz
+[-16，-10)
+RW 0x0102
+Freq of water R32
+30~120Hz
+[-23，-16)
+RW 0x0103
+Freq of water R33
+30~120Hz
+T＜-23℃
+RW 0x0104
+Freq of heat RO4
+30~120Hz
+T≥14℃
+RW 0x0105
+Freq of heat RO5
+30~120Hz
+[9，14)
+RW 0x0106
+Freq of heat RO6
+30~120Hz
+[4，9)
+RW 0x0107
+Freq of heat RO7
+30~120Hz
+[-5，4)
+RW 0x0108
+Freq of heat RO8
+30~120Hz
+[-10，-5)
+
+
+-- 14 of 21 --
+
+15
+RW 0x0109
+Freq of heat RO9
+30~120Hz
+[-16，-10)
+RW 0x010A
+Freq of heat R10
+30~120Hz
+[-23，-16)
+RW 0x010B
+Freq of heat R11
+30~120Hz
+T＜-23℃
+RW 0x010C
+Freq of cool R12
+30~120Hz
+T≥38℃
+RW 0x010D
+Freq of cool R13
+30~120Hz
+[30，38)
+RW 0x010E
+Freq of cool R14
+30~120Hz
+[25，30)
+RW 0x010F
+Freq of cool R15
+30~120Hz
+T＜25℃
+RW 0x0110
+Freq adj lower limit R21
+0~125Hz
+RW 0x0111
+Freq adj lower limit R22
+0~125Hz
+RW 0x0112
+Freq adj lower limit R23
+0~125Hz
+RW 0x0113
+Freq adj lower limit R24
+0~125Hz
+RW 0x0114
+Freq adj lower upper R25
+0~125Hz
+RW 0x0115
+Freq adj lower upper R26
+0~125Hz
+RW 0x0116
+Freq adj lower upper R27
+0~125Hz
+RW 0x0117
+Freq adj lower upper R28
+0~125Hz
+RW 0x0118
+RW 0x0119
+Timeband 1 ON hour
+0-23
+RW 0x011A
+Timeband 1 ON minutes
+0-59
+RW 0x011B
+Timeband 1 OFF hour
+0-23
+RW 0x011C
+Timeband 1 OFF minutes
+0-59
+RW 0x011D
+Timeband 2 ON hour
+0-23
+RW 0x011E
+Timeband 2 ON minutes
+0-59
+RW 0x011F
+Timeband 2 OFF hour
+0-23
+RW 0x0120
+Timeband 2 OFF minutes
+0-59
+RW 0x0121
+Timeband 3 ON hour
+0-23
+RW 0x0122
+Timeband 3 ON minutes
+0-59
+RW 0x0123
+Timeband 3 OFF hour
+0-23
+RW 0x0124
+Timeband 3 OFF minutes
+0-59
+RW 0x0125
+Invalid
+RW 0x0126
+Invalid
+
+
+-- 15 of 21 --
+
+16
+RW 0x0127
+Invalid
+RW 0x0128
+Invalid
+RW 0x0129
+Invalid
+RW 0x012A
+Invalid
+RW 0x012B
+Invalid
+RW 0x012C
+Invalid
+RW 0x012D
+ECO freq of water R34
+30~120Hz
+RW 0x012E
+ECO freq of water R35
+30~120Hz
+RW 0x012F
+ECO freq of water R36
+30~120Hz
+RW 0x0130
+ECO freq of water R37
+30~120Hz
+RW 0x0131
+ECO freq of water R38
+30~120Hz
+RW 0x0132
+ECO freq of water R39
+30~120Hz
+RW 0x0133
+ECO freq of water R40
+30~120Hz
+RW 0x0134
+ECO freq of water R41
+30~120Hz
+RW 0x0135
+ECO freq of heat R42
+30~120Hz
+RW 0x0136
+ECO freq of heat R43
+30~120Hz
+RW 0x0137
+ECO freq of heat R44
+30~120Hz
+RW 0x0138
+ECO freq of heat R45
+30~120Hz
+RW 0x0139
+ECO freq of heat R46
+30~120Hz
+RW 0x013A
+ECO freq of heat R47
+30~120Hz
+RW 0x013B
+ECO freq of heat R48
+30~120Hz
+RW 0x013C
+ECO freq of heat R49
+30~120Hz
+RW 0x013D
+ECO freq of cool R50
+30~120Hz
+RW 0x013E
+ECO freq of cool R51
+30~120Hz
+RW 0x013F
+ECO freq of cool R52
+30~120Hz
+RW 0x0140
+ECO freq of cool R53
+30~120Hz
+RW 0x0141
+Night freq of water R54
+30~120Hz
+RW 0x0142
+Night freq of water R55
+30~120Hz
+RW 0x0143
+Night freq of water R56
+30~120Hz
+RW 0x0144
+Night freq of water R57
+30~120Hz
+
+
+-- 16 of 21 --
+
+17
+RW 0x0145
+Night freq of water R58
+30~120Hz
+RW 0x0146
+Night freq of water R59
+30~120Hz
+RW 0x0147
+Night freq of water R60
+30~120Hz
+RW 0x0148
+Night freq of water R61
+30~120Hz
+RW 0x0149
+Night freq of heat R62
+30~120Hz
+RW 0x014A
+Night freq of heat R63
+30~120Hz
+RW 0x014B
+Night freq of heat R64
+30~120Hz
+RW 0x014C
+Night freq of heat R65
+30~120Hz
+RW 0x014D
+Night freq of heat R66
+30~120Hz
+RW 0x014E
+Night freq of heat R67
+30~120Hz
+RW 0x014F
+Night freq of heat R68
+30~120Hz
+RW 0x0150
+Night freq of heat R69
+30~120Hz
+RW 0x0151
+Night freq of cool R70
+30~120Hz
+RW 0x0152
+Night freq of cool R71
+30~120Hz
+RW 0x0153
+Night freq of cool R72
+30~120Hz
+RW 0x0154
+Night freq of cool R73
+30~120Hz
+RW 0x0155
+Test freq of water R74
+30~120Hz
+RW 0x0156
+Test freq of water R75
+30~120Hz
+RW 0x0157
+Test freq of water R76
+30~120Hz
+RW 0x0158
+Test freq of water R77
+30~120Hz
+RW 0x0159
+Test freq of water R78
+30~120Hz
+RW 0x015A
+Test freq of water R79
+30~120Hz
+RW 0x015B
+Test freq of water R80
+30~120Hz
+RW 0x015C
+Test freq of water R81
+30~120Hz
+RW 0x015D
+Test freq of heat R82
+30~120Hz
+RW 0x015E
+Test freq of heat R83
+30~120Hz
+RW 0x015F
+Test freq of heat R84
+30~120Hz
+RW 0x0160
+Test freq of heat R85
+30~120Hz
+RW 0x0161
+Test freq of heat R86
+30~120Hz
+RW 0x0162
+Test freq of heat R87
+30~120Hz
+
+
+-- 17 of 21 --
+
+18
+RW 0x0163
+Test freq of heat R88
+30~120Hz
+RW 0x0164
+Test freq of heat R89
+30~120Hz
+RW 0x0165
+Test freq of cool R90
+30~120Hz
+RW 0x0166
+Test freq of cool R91
+30~120Hz
+RW 0x0167
+Test freq of cool R92
+30~120Hz
+RW 0x0168
+Test freq of cool R93
+30~120Hz
+RW 0x0169
+E01 Economic heat ambi 1
+-30~50℃
+RW 0x016A
+E02 Economic heat ambi 2
+-30~50℃
+RW 0x016B
+E03 Economic heat ambi 3
+-30~50℃
+RW 0x016C
+E04 Economic heat ambi 4
+-30~50℃
+RW 0x016D
+E05 Economic water ambi 1
+-30~50℃
+RW 0x016E
+E06 Economic water ambi 2
+-30~50℃
+RW 0x016F
+E07 Economic water ambi 3
+-30~50℃
+RW 0x0170
+E08 Economic water ambi 4
+-30~50℃
+RW 0x0171
+E09 Economic cool ambi 1
+-30~50℃
+RW 0x0172
+E10 Economic cool ambi 2
+-30~50℃
+RW 0x0173
+E11 Economic cool ambi 3
+-30~50℃
+RW 0x0174
+E12 Economic cool ambi 4
+-30~50℃
+RW 0x0175
+E13 Economic heat temp 1
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x0176
+E14 Economic heat temp 2
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x0177
+E15 Economic heat temp 3
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x0178
+E16 Economic heat temp 4
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x0179
+E17 Economic water temp 1
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x017A
+E18 Economic water temp 2
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x017B
+E19 Economic water temp 3
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x017C
+E20 Economic water temp 4
+10~55
+n*0.5℃（Read only lower 8 bits）
+RW 0x017D
+E21 Economic cool temp 1
+12~30
+n*0.5℃（Read only lower 8 bits）
+RW 0x017E
+E22 Economic cool temp 2
+12~30
+n*0.5℃（Read only lower 8 bits）
+RW 0x017F
+E23 Economic cool temp 3
+12~30
+n*0.5℃（Read only lower 8 bits）
+RW 0x0180
+E24 Economic cool temp 4
+12~30
+n*0.5℃（Read only lower 8 bits）
+
+
+-- 18 of 21 --
+
+19
+RW 0x0181
+G08 Comp.delay
+1~60min
+RW 0x0182
+G06 Comp.delay
+1~60min
+RW 0x0183
+G07 Hotwater heater Ext.
+-30~30℃
+RW 0x0184
+G05 heating heater Ext.
+-30~30℃
+RW 0x0185
+G03 Start internal
+1~120min
+RW 0x0186
+F13 DC pump mode
+0 manual/1 auto
+RW 0x0187
+F14 DC pump cycle
+10~120s
+RW 0x0188
+F15 DC pump freq set
+10~100%
+RW 0x0189
+F16 DC pump max freq
+10~100%
+RW 0x018A
+F17 DC pump min freq
+10~100%
+RW 0x018B
+F18 DC pump scale factor
+1~10
+RW 0x018C
+F19 DC pump diff.
+0~100
+RW 0x018D
+G04 Delta temp.set
+5~30℃
+RW 0x018E
+F21 Comp freq scale factor
+1~10
+RW 0x018F
+F22 Comp freq diff
+0~100
+RW 0x0190
+F23 Compressor mode
+0 NOR，1 ECO，
+2 Night，3 Test
+RW 0x0191
+G09 Enable switch
+NO linkage
+YES amb
+RW 0x0192
+G10 Ambtemp switch setp.
+-20~30℃
+RW 0x0193
+G11 Ambtemp diff.
+1~10℃
+RW 0x0194
+F27 Limit freq temp diff
+5~20℃
+RW 0x0195
+F28 Dec.freq temp diff
+5~20℃
+RW 0x0196
+F29 Limit freq outlet low
+0~20℃
+RW 0x0197
+F30 Dec.freq outlet low
+0~20℃
+RW 0x0198
+F31 Limit freq outlet high
+30~80℃
+RW 0x0199
+F32 Dec freq outlet high
+30~80℃
+RW 0x019A
+Temp.set point of
+antilegionella
+30~70
+RW 0x019B
+weekday of antilegionella
+0(Sun)~6(Sat)
+
+
+-- 19 of 21 --
+
+20
+RW 0x019C
+Start timer of antilegionella
+0~23
+RW 0x019D
+End timer of antilegionella
+0~23
+RW 0x019E
+G02 Pump work
+0-Interval，
+1-Normal
+2-Demand
+RW 0x019F
+F35 Antifreeze cycle
+1~60min
+RW 0x01A0
+F36 Three-way valve cycle
+1~60hour
+RW 0x01A1
+F37 Pump cycle in error
+1~120min
+RW 0x01A2
+F38 Comp freq cycle
+20~60s
+RW 0x01A3
+F41 Air too low stp.
+-40~0
+RW 0x01A4
+Hotwater Set temp of Timeband 1
+56~120
+n*0.5℃（Read only lower 8 bits）
+RW 0x01A5
+heat Set temp of Timeband 1
+30~100
+n*0.5℃（Read only lower 8 bits）
+RW 0x01A6
+cool Set temp of Timeband 1
+14~60
+n*0.5℃（Read only lower 8 bits）
+RW 0x01A7
+Hotwater Set temp of Timeband 2
+56~120
+n*0.5℃（Read only lower 8 bits）
+RW 0x01A8
+heat Set temp of Timeband 2
+30~100
+n*0.5℃（Read only lower 8 bits）
+RW 0x01A9
+cool Set temp of Timeband 2
+14~60
+n*0.5℃（Read only lower 8 bits）
+RW 0x01AA
+Hotwater Set temp of Timeband 3
+56~120
+n*0.5℃（Read only lower 8 bits）
+RW 0x01AB
+heat Set temp of Timeband 3
+30~100
+n*0.5℃（Read only lower 8 bits）
+RW 0x01AC
+cool Set temp of Timeband 3
+14~60
+n*0.5℃（Read only lower 8 bits）
+RW 0x01AD
+Week set of Timeband 1
+0~6
+RW 0x01AE
+Week set of Timeband 2
+0~6
+RW 0x01AF
+Week set of Timeband 3
+0~6
+RW 0x01B0
+H17 Def fan high press
+20~40bar
+RW 0x01B1
+H18 Def fan speed
+20~100
+n*10rpm
+RW 0x01B2
+F47 High press adjust
+-50~50
+RW 0x01B3
+F48 Low press adjust
+-50~50
+RW 0x01B4
+F51 Air too low diff
+1~10℃
+RW 0x01B5
+B93 AV init outlet stp
+20~60℃
+RW 0x01B6
+F53 Outlet temp offset stp
+30~55℃
+RW 0x01B7
+F52 Outlet temp offset
+0~50℃
+
+
+-- 20 of 21 --
+
+21
+RW 0x01B8
+F54 Heat upper limit stp
+10~80
+RW 0x01B9
+F55 Cool lower limit stp
+7~30
+RW 0x01BA
+F56 Model selection
+1~10
+1- A102508
+2- A202508
+3- A103008
+4- A203008
+5- A104008
+6- A204008
+7- A105008
+8- A205008
+9- A106008
+10- A206008
+RW 0x01BB
+R94 Oil return freq.
+10~70
+
+
+-- 21 of 21 --

@@ -1,0 +1,48 @@
+# SPRSUN custom component — YAML example
+#
+# 1. Disable the native modbus package (do NOT run both):
+#      # packages:
+#      #   heatpump: !include heatpump-day.yaml
+#
+# 2. Copy custom_components/sprsun into your HA config/custom_components/
+#
+# 3. Add the block below to configuration.yaml (use your secrets):
+#
+# Dual-rate (v0.2): scan_interval = light overview poll; full_interval = full
+# register_limit map. Matches proven PC panel behaviour (2026-08-10).
+
+sprsun:
+  host: !secret modbus_host
+  port: !secret modbus_port
+  slave: !secret modbus_device_id
+  scan_interval: 5
+  full_interval: 20
+  message_wait_milliseconds: 350
+  full_wait_milliseconds: 450
+  max_block: 125
+  # Full register map (413). Drop to 50/100/… if the EW11 struggles.
+  register_limit: 413
+
+# ---------------------------------------------------------------------------
+# Recorder — recommended with SPRSUN
+#
+# Memory: the 10k-line live log is a fixed ring buffer (~1–2 MB RAM max).
+# Storage risk is Home Assistant's recorder DB, not the ring buffer:
+#   - sensor.sprsun_live_log carries a 50-line "tail" attribute (exclude it)
+#   - light-polled temps use force_update so the UI stays fresh; that writes
+#     a history row every scan_interval even when °C is unchanged
+#
+# Keep default purge (or set purge_keep_days). Exclude the live-log entity.
+# Do NOT exclude the temperature sensors if you want Overview history graphs.
+# ---------------------------------------------------------------------------
+# recorder:
+#   purge_keep_days: 10
+#   exclude:
+#     entities:
+#       - sensor.sprsun_live_log
+#     # Optional if DB grows too fast and you don't need 5s-resolution history
+#     # on unchanged readings (gauges still update live; graphs get sparser):
+#     # entity_globs:
+#     #   - sensor.sprsun_temps_*
+#     #   - sensor.sprsun_machine_*
+#     #   - binary_sensor.sprsun_*

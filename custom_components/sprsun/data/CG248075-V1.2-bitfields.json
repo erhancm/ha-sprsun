@@ -1,0 +1,475 @@
+[
+  {
+    "addr": 2,
+    "addr_hex": "0x0002",
+    "register_name": "Switching Input Symbol",
+    "group": "status",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "A/C Linkage switch"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Linkage switch"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "Heating linkage"
+      },
+      {
+        "bit": 3,
+        "mask": 8,
+        "label": "Cooling linkage"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "label": "Flow Switch"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "High pressure switch"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Phase sequence detection"
+      }
+    ]
+  },
+  {
+    "addr": 3,
+    "addr_hex": "0x0003",
+    "register_name": "Working Status Mark",
+    "group": "status",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "hotwater demand"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Heating demand"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "With or without heating"
+      },
+      {
+        "bit": 3,
+        "mask": 8,
+        "label": "With or without cooling"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "label": "Antilegionella on"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "cooling demand"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Alarm downtime"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "label": "defrost"
+      }
+    ]
+  },
+  {
+    "addr": 4,
+    "addr_hex": "0x0004",
+    "register_name": "Output Symbol 1",
+    "group": "status",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Compressor"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "Fan"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "4-way valve"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "label": "High or low fan speed:0-low 1-high"
+      }
+    ]
+  },
+  {
+    "addr": 5,
+    "addr_hex": "0x0005",
+    "register_name": "Output Symbol 2",
+    "group": "status",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Chassis heater"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "Heating heater"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Three-way valve"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "label": "Hotwater heater"
+      }
+    ]
+  },
+  {
+    "addr": 6,
+    "addr_hex": "0x0006",
+    "register_name": "Output Symbol 3",
+    "group": "status",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "A/C PUMP"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Crank heater"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "Assistant solenoid valve"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Pump"
+      }
+    ]
+  },
+  {
+    "addr": 7,
+    "addr_hex": "0x0007",
+    "register_name": "Failure Symbol 1",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Hotwater temp"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Ambi temp"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "coil temp"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "label": "Outlet temp"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "High pressure sensor failure"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "label": "Phase sequence"
+      }
+    ]
+  },
+  {
+    "addr": 8,
+    "addr_hex": "0x0008",
+    "register_name": "Failure Symbol 2",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Water flow failure"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "High protection of heating water outlet"
+      }
+    ]
+  },
+  {
+    "addr": 9,
+    "addr_hex": "0x0009",
+    "register_name": "Failure Symbol 3",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Outlet gas temp. failure"
+      }
+    ]
+  },
+  {
+    "addr": 10,
+    "addr_hex": "0x000A",
+    "register_name": "Failure Symbol 4",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Water inlet temp. failure"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Exhaust temperature is too high"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "Low protection of cooling water outlet"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Inlet gas temp. failure"
+      }
+    ]
+  },
+  {
+    "addr": 11,
+    "addr_hex": "0x000B",
+    "register_name": "Failure Symbol 5",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Low pressure protection"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "High pressure protection"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "Coil temperature is too high"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "High pressure sensor failure"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "label": "Low pressure sensor failure"
+      }
+    ]
+  },
+  {
+    "addr": 12,
+    "addr_hex": "0x000C",
+    "register_name": "Failure Symbol 6",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 4,
+        "mask": 16,
+        "label": "sec antifreeze"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "one antifreeze"
+      }
+    ]
+  },
+  {
+    "addr": 13,
+    "addr_hex": "0x000D",
+    "register_name": "Failure Symbol 7",
+    "group": "failures",
+    "bits": [
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Ambient temperature is too low"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "label": "frequency conversion module is faulty"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "2# Dc fan failure"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "1# Dc fan failure"
+      }
+    ]
+  },
+  {
+    "addr": 50,
+    "addr_hex": "0x0032",
+    "register_name": "Parameter Marker Definition",
+    "group": "control_flags",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "0-OFF，1-ON"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "MV mode：0-Auto，1- manu"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "Manual frequency selection"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "AV MODE：0-Auto，1- manu"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "AV init outlet stp"
+      }
+    ]
+  },
+  {
+    "addr": 51,
+    "addr_hex": "0x0033",
+    "register_name": "Control Mark 1",
+    "group": "control_flags",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Constant freq adj：0-NO，1-YES"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Pressure switch enable：1-use，0-Unuse"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "AV cool enable：0-use,1-Unuse"
+      },
+      {
+        "bit": 3,
+        "mask": 8,
+        "label": "AV control mode: 0-Enhance, 1-Exhaust"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "label": "DCfan 1 enable：0-Unuse，1-use"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "label": "DCfan 2 enable：0-Unuse，1-use"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "label": "Parameters reset 0-Unuse ，1-use"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "label": "Failure reset 0-Unuse，1-use"
+      }
+    ]
+  },
+  {
+    "addr": 52,
+    "addr_hex": "0x0034",
+    "register_name": "Control Mark 2",
+    "group": "control_flags",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "antilegionella Enable 0-Unuse，1-use"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Two/Three function 0-Unuse，1-use"
+      }
+    ]
+  },
+  {
+    "addr": 53,
+    "addr_hex": "0x0035",
+    "register_name": "Timeband",
+    "group": "schedule",
+    "bits": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "label": "Timeband 1 Enable"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "label": "Timeband 2 Enable"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "label": "Timeband 3 Enable"
+      }
+    ]
+  }
+]
