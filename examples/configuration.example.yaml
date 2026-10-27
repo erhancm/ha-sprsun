@@ -27,22 +27,16 @@ sprsun:
 # Recorder — recommended with SPRSUN
 #
 # Memory: the 10k-line live log is a fixed ring buffer (~1–2 MB RAM max).
-# Storage risk is Home Assistant's recorder DB, not the ring buffer:
-#   - sensor.sprsun_live_log carries a 50-line "tail" attribute (exclude it)
-#   - light-polled temps use force_update so the UI stays fresh; that writes
-#     a history row every scan_interval even when °C is unchanged
+# The recorder DB is the only growing store, and the integration writes a row
+# only when a register value changes (no force_update, no per-poll timestamp
+# attribute), so temperature history is cheap enough to keep.
 #
-# Keep default purge (or set purge_keep_days). Exclude the live-log entity.
-# Do NOT exclude the temperature sensors if you want Overview history graphs.
+# Exclude the two diagnostic entities whose attributes still change every poll:
+# the live-log tail (~5 KB) and the refresh timing.
 # ---------------------------------------------------------------------------
 # recorder:
 #   purge_keep_days: 10
 #   exclude:
 #     entities:
 #       - sensor.sprsun_live_log
-#     # Optional if DB grows too fast and you don't need 5s-resolution history
-#     # on unchanged readings (gauges still update live; graphs get sparser):
-#     # entity_globs:
-#     #   - sensor.sprsun_temps_*
-#     #   - sensor.sprsun_machine_*
-#     #   - binary_sensor.sprsun_*
+#       - sensor.sprsun_modbus_refresh

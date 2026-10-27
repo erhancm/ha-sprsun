@@ -219,8 +219,9 @@ sprsun:
 `sensor.sprsun_modbus_refresh`. On that last one, `kind` should alternate
 `light` / `full` and `errors` should stay near zero.
 
-**5. Recorder tip:** the live-log entity carries a fat `tail` attribute — exclude
-it from history:
+**5. Recorder tip:** history now gets a row only when a value changes, so
+temperatures can stay in history. Exclude the two diagnostic entities whose
+attributes move on every poll (live-log tail, refresh timing):
 
 ```yaml
 recorder:
@@ -228,6 +229,7 @@ recorder:
   exclude:
     entities:
       - sensor.sprsun_live_log
+      - sensor.sprsun_modbus_refresh
 ```
 
 ---

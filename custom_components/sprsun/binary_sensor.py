@@ -73,7 +73,7 @@ class SprsunBitBinarySensor(CoordinatorEntity[SprsunCoordinator], BinarySensorEn
         clean = _clean_label(label, bit)
         self._attr_name = f"SPRSUN {clean}"
         self._attr_unique_id = f"sprsun_bit_{addr:04d}_{bit}_{slug(clean)}"
-        self._attr_force_update = addr in LIGHT_ADDRS
+        # No force_update: an unchanged bit must not create a recorder row.
         key = (addr, bit)
         if key in DEVICE_CLASS_RUNNING:
             self._attr_device_class = BinarySensorDeviceClass.RUNNING
@@ -89,9 +89,8 @@ class SprsunBitBinarySensor(CoordinatorEntity[SprsunCoordinator], BinarySensorEn
 
     @property
     def extra_state_attributes(self):
-        polled = self.coordinator.addr_polled_at.get(self._addr)
+        # Constant attributes only — see sensor.py for why.
         return {
             "register": self._addr,
             "poll_group": "light" if self._addr in LIGHT_ADDRS else "full",
-            "last_polled": polled.isoformat() if polled else None,
         }

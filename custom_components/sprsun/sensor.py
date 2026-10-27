@@ -45,9 +45,9 @@ class SprsunRegisterSensor(CoordinatorEntity[SprsunCoordinator], SensorEntity):
         self._reg = reg
         self._attr_name = f"SPRSUN [{reg.group}] {reg.name}"
         self._attr_unique_id = f"sprsun_pdf_{reg.addr:04d}_{slug(reg.name)}"
-        # Light-polled regs are re-read every scan_interval; force HA to refresh
-        # last_updated even when the decoded value is unchanged (stale UI otherwise).
-        self._attr_force_update = reg.addr in LIGHT_ADDRS
+        # No force_update and no per-poll timestamp attribute: an unchanged
+        # value must not create a recorder row on every poll. The state machine
+        # still refreshes each scan; history records real changes only.
         if reg.unit:
             self._attr_native_unit_of_measurement = reg.unit
         if reg.device_class == "temperature":
@@ -73,11 +73,11 @@ class SprsunRegisterSensor(CoordinatorEntity[SprsunCoordinator], SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        polled = self.coordinator.addr_polled_at.get(self._reg.addr)
+        # Keep these constant: a timestamp here would make every poll look like
+        # a state change and defeat the recorder's change detection.
         return {
             "register": self._reg.addr,
             "poll_group": "light" if self._reg.addr in LIGHT_ADDRS else "full",
-            "last_polled": polled.isoformat() if polled else None,
         }
 
 class SprsunRefreshMsSensor(CoordinatorEntity[SprsunCoordinator], SensorEntity):
