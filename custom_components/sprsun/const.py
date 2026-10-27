@@ -123,6 +123,10 @@ DEVICE_CLASS_PROBLEM = {(2, 4), (3, 6)}
 # Circular live-log (in-memory). UI shows a short tail; dump service writes full buffer.
 LIVE_LOG_CAPACITY = 10_000
 LIVE_LOG_UI_LINES = 50
+# Fixed dump target under the Home Assistant config dir. The dump service never
+# takes a caller-supplied path, so it cannot overwrite configuration.yaml,
+# secrets.yaml or any other file with log text.
+LIVE_LOG_DUMP_FILE = "sprsun_live.log"
 
 # Bit edges to record in the live log when light/full values change.
 LIVE_LOG_WATCH_BITS: tuple[tuple[int, int, str], ...] = (

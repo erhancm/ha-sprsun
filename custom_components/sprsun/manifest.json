@@ -1,12 +1,19 @@
 {
   "domain": "sprsun",
   "name": "SPRSUN",
-  "codeowners": ["@erhancm"],
+  "codeowners": [
+    "@erhancm"
+  ],
   "config_flow": false,
-  "dependencies": ["http", "frontend"],
+  "dependencies": [
+    "http",
+    "frontend"
+  ],
   "documentation": "https://github.com/erhancm/ha-sprsun",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/erhancm/ha-sprsun/issues",
-  "requirements": ["pymodbus>=3.6.0"],
-  "version": "0.2.9"
+  "requirements": [
+    "pymodbus>=3.6.0"
+  ],
+  "version": "0.2.10"
 }

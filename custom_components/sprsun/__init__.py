@@ -28,6 +28,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_SLAVE,
     DOMAIN,
+    LIVE_LOG_DUMP_FILE,
     MODE_OPTIONS,
 )
 from .coordinator import SprsunCoordinator
@@ -162,9 +163,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         await coordinator.async_refresh_full()
 
     async def handle_dump_live_log(call: ServiceCall) -> None:
-        filename = str(call.data.get("filename") or "sprsun_live.log")
-        # Prevent path traversal — basename only under config dir.
-        filename = filename.replace("\\", "/").split("/")[-1] or "sprsun_live.log"
+        # Fixed target on purpose: no caller-supplied path reaches the config
+        # dir, so the service cannot overwrite configuration.yaml,
+        # secrets.yaml, automations.yaml, … with log text.
+        filename = LIVE_LOG_DUMP_FILE
         path = hass.config.path(filename)
 
         def _write() -> int:

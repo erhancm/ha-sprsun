@@ -1,4 +1,4 @@
-# SPRSUN custom component — YAML example
+# SPRSUN CG248075 custom component — YAML example
 #
 # 1. Disable the native modbus package (do NOT run both):
 #      # packages:
@@ -20,7 +20,7 @@ sprsun:
   message_wait_milliseconds: 350
   full_wait_milliseconds: 450
   max_block: 125
-  # Full register map (413). Drop to 50/100/… if the EW11 struggles.
+  # Full CG248075 map (413). Drop to 50/100/… if the EW11 struggles.
   register_limit: 413
 
 # ---------------------------------------------------------------------------

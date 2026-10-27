@@ -44,15 +44,9 @@ refresh_full:
 dump_live_log:
   name: Dump live log (HA server)
   description: >
-    Write the in-memory circular live log (up to 10k lines) to a file under
-    the Home Assistant config directory (default sprsun_live.log). This saves
-    on the HA host, not your PC.
-  fields:
-    filename:
-      required: false
-      example: sprsun_live.log
-      selector:
-        text:
+    Write the in-memory circular live log (up to 10k lines) to the fixed file
+    sprsun_live.log under the Home Assistant config directory. This saves on
+    the HA host, not your PC.
 
 download_live_log:
   name: Download live log (PC)

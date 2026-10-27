@@ -265,7 +265,7 @@ lovelace:
 | `sprsun.set_mode` | Mode 0–4 or a name like `Heating` |
 | `sprsun.write_register` | Raw FC6 — use sparingly |
 | `sprsun.refresh_full` | Immediate full map sweep |
-| `sprsun.dump_live_log` | Write the live log on the HA host under `/config/` |
+| `sprsun.dump_live_log` | Write the live log to `/config/sprsun_live.log` on the HA host (fixed name) |
 | `sprsun.download_live_log` | Notification with a short-lived browser download |
 | `sprsun.clear_live_log` | Empty the in-memory log |
 

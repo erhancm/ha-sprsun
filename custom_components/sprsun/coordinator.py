@@ -137,6 +137,7 @@ class SprsunCoordinator(DataUpdateCoordinator[dict[int, int]]):
             except Exception:  # noqa: BLE001
                 pass
             self._client = None
+
         self._client = ModbusTcpClient(
             self.host,
             port=self.port,
