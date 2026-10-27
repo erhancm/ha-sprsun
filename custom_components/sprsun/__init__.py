@@ -98,10 +98,35 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         full_interval=conf[CONF_FULL_INTERVAL],
         full_wait_ms=conf[CONF_FULL_WAIT_MS],
     )
-    await coordinator.async_connect()
-    await coordinator.async_refresh()
-    if coordinator.last_update_success is False and coordinator.last_exception:
-        _LOGGER.error("Initial SPRSUN poll failed: %s", coordinator.last_exception)
+    # Never abort setup because the gateway is unreachable at boot (HA starting
+    # before the EW11 has a lease, a switch reboot, a moved DHCP address...).
+    # If setup raised, HA creates no entities at all and only a restart brings
+    # them back — that is exactly what happened after the 2026-10-23 reboot.
+    # Instead: create the entities unavailable and let the coordinator retry
+    # every scan_interval until the gateway answers again.
+    try:
+        await coordinator.async_connect()
+        await coordinator.async_refresh()
+        if coordinator.last_update_success is False and coordinator.last_exception:
+            _LOGGER.warning(
+                "Initial SPRSUN poll failed: %s — retrying every %ss",
+                coordinator.last_exception,
+                conf[CONF_SCAN_INTERVAL],
+            )
+    except Exception as exc:  # noqa: BLE001 - UpdateFailed, OSError, pymodbus
+        # Mark the very first cycle failed so entities start "unavailable"
+        # rather than showing a half-built blank state until the next poll.
+        set_error = getattr(coordinator, "async_set_update_error", None)
+        if set_error is not None:
+            set_error(exc)
+        _LOGGER.warning(
+            "SPRSUN gateway %s:%s unreachable at startup (%s) — entities created "
+            "unavailable, retrying every %ss",
+            conf[CONF_HOST],
+            conf[CONF_PORT],
+            exc,
+            conf[CONF_SCAN_INTERVAL],
+        )
 
     hass.data[DOMAIN] = {
         "coordinator": coordinator,

@@ -66,10 +66,21 @@ ADDR_MODE = 54
 ADDR_SETPOINT_DHW = 202
 ADDR_SETPOINT_COOL = 203
 ADDR_SETPOINT_HEAT = 204
+ADDR_G02_PUMP_WORK = 414  # 0 Interval · 1 Normal · 2 Demand
+ADDR_P03_TEMP_DIFF = 198  # 2–18 °C stop hysteresis
+ADDR_F55_COOL_LOWER_LIMIT = 441  # 7–30 °C cool water floor
 
 # Fast-path addresses — polled every scan_interval.
 # Output Symbol 1/3 (4, 6) keep compressor / fan / pumps live.
 # Demoted from light (full poll only): EEV1 (28), Comp A (35).
+#
+# Keep G02 (414), P03 (198) and F55 (441) OUT of this set. They are
+# configuration parameters, not live telemetry, and the 20 s full poll
+# already covers them (the definitions file has 413 registers and
+# register_limit is 413, so nothing is truncated). pack_blocks() packs by
+# SPAN, not contiguity: adding 414 and 441 to this sparse set made the fast
+# path read 28 contiguous registers (414..441) instead of 2, inflating the
+# 5 s path from 54 to 86 registers per poll.
 LIGHT_ADDRS = frozenset(
     {
         4,  # Output Symbol 1 — Compressor, Fan
@@ -98,6 +109,12 @@ MODE_OPTIONS = {
     2: "Cooling",
     3: "Heating+DHW",
     4: "Cooling+DHW",
+}
+
+PUMP_WORK_OPTIONS = {
+    0: "Interval",
+    1: "Normal",
+    2: "Demand",
 }
 
 DEVICE_CLASS_RUNNING = {(4, 0), (4, 5), (6, 0), (6, 6)}

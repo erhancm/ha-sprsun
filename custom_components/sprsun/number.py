@@ -1,4 +1,4 @@
-"""Setpoint number entities — P04/P02/P01 packed lower-8 × 0.5 °C."""
+"""Number entities — packed setpoints and integer diffs (P03)."""
 from __future__ import annotations
 
 from homeassistant.components.number import NumberEntity, NumberMode
@@ -9,6 +9,8 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
+    ADDR_F55_COOL_LOWER_LIMIT,
+    ADDR_P03_TEMP_DIFF,
     ADDR_SETPOINT_COOL,
     ADDR_SETPOINT_DHW,
     ADDR_SETPOINT_HEAT,
@@ -17,7 +19,7 @@ from .const import (
 from .coordinator import SprsunCoordinator
 from .register_map import pack_setpoint_c, setpoint_c
 
-_SPECS = (
+_SETPOINTS = (
     (ADDR_SETPOINT_HEAT, "SPRSUN Heating setpoint", 10, 55, "sprsun_setpoint_heat"),
     (ADDR_SETPOINT_COOL, "SPRSUN Cooling setpoint", 12, 30, "sprsun_setpoint_cool"),
     (ADDR_SETPOINT_DHW, "SPRSUN Hot water setpoint", 10, 55, "sprsun_setpoint_dhw"),
@@ -34,7 +36,27 @@ async def async_setup_platform(
     async_add_entities(
         [
             SprsunSetpointNumber(coordinator, addr, name, lo, hi, uid)
-            for addr, name, lo, hi, uid in _SPECS
+            for addr, name, lo, hi, uid in _SETPOINTS
+        ]
+        + [
+            SprsunIntNumber(
+                coordinator,
+                ADDR_P03_TEMP_DIFF,
+                "SPRSUN P03 Temp diff",
+                2,
+                18,
+                1,
+                "sprsun_p03_temp_diff",
+            ),
+            SprsunIntNumber(
+                coordinator,
+                ADDR_F55_COOL_LOWER_LIMIT,
+                "SPRSUN F55 Cool lower limit",
+                7,
+                30,
+                1,
+                "sprsun_f55_cool_lower_limit",
+            ),
         ]
     )
 
@@ -72,3 +94,38 @@ class SprsunSetpointNumber(CoordinatorEntity[SprsunCoordinator], NumberEntity):
         existing = int(data.get(self._addr, 0))
         packed = pack_setpoint_c(value, existing)
         await self.coordinator.async_write_register(self._addr, packed)
+
+
+class SprsunIntNumber(CoordinatorEntity[SprsunCoordinator], NumberEntity):
+    """Raw integer register (P03 hysteresis, F55 cool floor — not packed ×0.5)."""
+
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_mode = NumberMode.BOX
+
+    def __init__(
+        self,
+        coordinator: SprsunCoordinator,
+        addr: int,
+        name: str,
+        minimum: float,
+        maximum: float,
+        step: float,
+        unique_id: str,
+    ) -> None:
+        super().__init__(coordinator)
+        self._addr = addr
+        self._attr_name = name
+        self._attr_unique_id = unique_id
+        self._attr_native_min_value = minimum
+        self._attr_native_max_value = maximum
+        self._attr_native_step = step
+
+    @property
+    def native_value(self) -> float | None:
+        data = self.coordinator.data or {}
+        if self._addr not in data:
+            return None
+        return int(data[self._addr])
+
+    async def async_set_native_value(self, value: float) -> None:
+        await self.coordinator.async_write_register(self._addr, int(round(value)))
